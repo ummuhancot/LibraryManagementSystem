@@ -1,8 +1,10 @@
 package com.tpe.domain;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.crypto.Mac;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -20,20 +22,24 @@ public class Book {
     private Long id;
 
     @NotBlank(message = "Kitap ismi boşluk olamaz!!!")
-    @NotNull(message = "Kitap ismi girilmelidir!!!")//hata icin ayrı ayrı mesaj verebiliriz.
-    @Size(min = 3,max = 50,message = "Kitap ismi en az 2 karakter icermelidir!!!")
+    @NotNull(message = "Kitap ismi girilmelidir!!!")
+    @Size(min = 2,max = 50,message = "Kitap ismi en az 2 karakter içermelidir!!!!")
     @Column(nullable = false)
     private String title;
 
     @NotBlank(message = "Yazar ismi boşluk olamaz!!!")
-    @NotNull(message = "Yazar ismi girilmelidir!!!")//hata icin ayrı ayrı mesaj verebiliriz.
-    @Size(min = 3,max = 50,message = "Yazar ismi en az 2 karakter icermelidir!!!")
+    @Size(min = 2,max = 50,message = "Yazar ismi en az 2 karakter içermelidir!!!!")
     @Column(nullable = false)
     private String author;
 
-
-    @NotBlank(message = "Lütfen yayın yılını giriniz!!!")
+    @NotBlank(message = "Lütfen yayın yılını giriniz!")
     @Column(nullable = false)
-    private String publicationDate;//yayın tarihi
+    private String publicationDate;
+
+    @ManyToOne//fk ekler
+    @JsonIgnore
+    private Owner owner;
+
+
 
 }

@@ -47,5 +47,5 @@ LibraryManagementSystem
 
 
     //3- Find an Owner By ID
-    // http://localhost:8080/owners/2
+    // http://localhost:8080/owner/2
 
