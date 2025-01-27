@@ -1,7 +1,7 @@
 package com.tpe.exception;
 
-public class BookNotFoundException extends RuntimeException{
-    public BookNotFoundException(String message) {
-        super(message);
+public class BookNotFoundException extends RuntimeException {
+    public BookNotFoundException(String s) {
+        super(s);
     }
 }

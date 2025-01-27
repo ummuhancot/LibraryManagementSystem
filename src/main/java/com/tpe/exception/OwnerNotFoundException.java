@@ -1,7 +1,7 @@
 package com.tpe.exception;
 
 public class OwnerNotFoundException extends RuntimeException {
-    public OwnerNotFoundException(String message) {
-        super(message);
+    public OwnerNotFoundException(String s) {
+        super(s);
     }
 }

@@ -1,7 +1,6 @@
 package com.tpe.dto;
 
 import com.tpe.domain.Book;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,8 +11,9 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Setter
-@NoArgsConstructor//json kütüphanesi paramezresiz kütüphane kullanır.
+@NoArgsConstructor
 public class BookDTO {
+
     @NotBlank(message = "Kitap ismi boşluk olamaz!!!")
     @NotNull(message = "Kitap ismi girilmelidir!!!")
     @Size(min = 2,max = 50,message = "Kitap ismi en az 2 karakter içermelidir!!!!")
@@ -32,6 +32,4 @@ public class BookDTO {
         this.author=book.getAuthor();
         this.publicationDate=book.getPublicationDate();
     }
-
-
 }

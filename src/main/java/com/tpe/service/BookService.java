@@ -1,22 +1,27 @@
 package com.tpe.service;
 
 import com.tpe.domain.Book;
+import com.tpe.domain.Owner;
 import com.tpe.dto.BookDTO;
+import com.tpe.dto.OwnerDTO;
 import com.tpe.exception.BookNotFoundException;
+import com.tpe.exception.ConflictException;
+import com.tpe.exception.OwnerNotFoundException;
 import com.tpe.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final OwnerService ownerService;
 
     //1-b
     public void saveBook(BookDTO bookDTO) {
@@ -72,7 +77,6 @@ public class BookService {
         bookRepository.save(foundBook);//merge: update .. set ..
     }
 
-
     //9-b
     public List<Book> filterBooksByAuthor(String author) {
         List<Book> bookList=bookRepository.findByAuthorWithJPQL(author);
@@ -80,5 +84,39 @@ public class BookService {
             throw new BookNotFoundException("Yazara ait kitap bulunamadı!");
         }
         return bookList;
+    }
+
+    //10-b
+    public void addBookToOwner(Long bookId, Long ownerId) {
+        Book foundBook=getBookById(bookId);//owner:başka bir üye,aynı üye
+        Owner foundOwner= ownerService.getOwnerById(ownerId);
+
+        //belirtilen id ye sahip olan kitap daha önce ownera verilmiş mi
+        if (foundOwner.getBookList().contains(foundBook)){//kendisinde
+            throw new ConflictException("Bu kitap üyenin listesinde zaten var!");
+        } else if(foundBook.getOwner()!=null){//başka üyede
+            throw new ConflictException("Bu kitap başka bir üyededir!");
+        }else{
+            //aktif olan kitabı belirtilen ownera ekleyebiliriz.
+            foundBook.setOwner(foundOwner);
+            bookRepository.save(foundBook);
+        }
+
+    }
+
+    //2-b-DTO
+    public List<BookDTO> getAllAsDto() {
+        List<Book> bookList=bookRepository.findAll();
+        return bookList.stream().map(book->new BookDTO(book)).collect(Collectors.toList());
+    }
+
+    public OwnerDTO showOwner(Long bookId) {
+        Book book=getBookById(bookId);
+        Owner owner=book.getOwner();
+        if (owner!=null){
+            return new OwnerDTO(owner);
+        }else {
+            throw new OwnerNotFoundException("Kitap bir üyeye ait değil!");
+        }
     }
 }

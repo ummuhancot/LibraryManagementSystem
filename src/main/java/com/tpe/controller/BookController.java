@@ -1,7 +1,9 @@
 package com.tpe.controller;
 
 import com.tpe.domain.Book;
+import com.tpe.domain.Owner;
 import com.tpe.dto.BookDTO;
+import com.tpe.dto.OwnerDTO;
 import com.tpe.exception.BookNotFoundException;
 import com.tpe.service.BookService;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +47,7 @@ public class BookController {
 
     //2- Get All Books
     // http://localhost:8080/books + GET
-    //todo:ilerleyen derste return:List<BookDTO>
+
     @GetMapping
     public ResponseEntity<List<Book>> getAllBooks(){
         List<Book> books=bookService.findAllBooks();
@@ -113,12 +115,13 @@ public class BookController {
 
     }
 
-
     //8- Update a Book With Using DTO
-    //http://localhost:8080/books/update/2 + PUT(yer değiştirme)/PATCH(kısmi entity nin bir kısmını değiştirecekseniz)
-     @PatchMapping("/update/{id}")
+    // http://localhost:8080/books/update/2 + PUT(yer değiştirme)/PATCH(kısmi)
+    @PatchMapping("/update/{id}")
     public ResponseEntity<String> updateBook(@PathVariable("id") Long id,@Valid @RequestBody BookDTO bookDTO){
+
         bookService.updateBook(id,bookDTO);
+
         return ResponseEntity.ok("Kitap başarıyla güncellendi...");
     }
 
@@ -133,9 +136,50 @@ public class BookController {
     }
 
     //10- Add a Book to an Owner
-    // http://localhost:8080/books/add?book=3&owner=1
+    // http://localhost:8080/books/add?book=3&owner=1 + PATCH
+    @PatchMapping("/add")
+    public ResponseEntity<String> addBookToOwner(@RequestParam("book") Long bookId,
+                                                 @RequestParam("owner") Long ownerId){
 
-    //todo:exceptionhandler
-    //todo:idsi verilen hangi üyede ?
+        bookService.addBookToOwner(bookId,ownerId);
+
+        return ResponseEntity.ok("Kitap üyeye eklendi.");//200
+
+    }
+
+    //2-a- Get All Books as DTO
+    // http://localhost:8080/books/dto + GET
+    @GetMapping("/dto")
+    public ResponseEntity<List<BookDTO>> getAllAsDto(){
+
+        List<BookDTO> allBooks =bookService.getAllAsDto();
+
+        return ResponseEntity.ok(allBooks);
+
+    }
+
+    //idsi verilen kitap hangi üyede?
+    //http://localhost:8080/books/show/owner/2 + GET
+    @GetMapping("/show/owner/{id}")
+    public ResponseEntity<OwnerDTO> showOwner(@PathVariable("id") Long bookId){
+
+        OwnerDTO ownerDTO=bookService.showOwner(bookId);
+
+        return ResponseEntity.ok(ownerDTO);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
